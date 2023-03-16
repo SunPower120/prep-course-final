@@ -10,12 +10,14 @@ const info = document.getElementById("info");
 const button = document.getElementById("play-button");
 const board = document.getElementById("board");
 
-button.addEventListener("click", () => {
+button?.addEventListener("click", () => {
   game.restart();
-  draw(game);
+  if (board) {
+    draw(game, board);
+  }
 });
 
-const draw = (game: Game) => {
+const draw = (game: Game, board: HTMLElement) => {
   board.innerHTML = "";
 
   game.getCells().forEach((cell, i) => {
@@ -26,24 +28,33 @@ const draw = (game: Game) => {
     }
     div.addEventListener("click", () => {
       game.onClick(i);
-      draw(game);
+      draw(game, board);
     });
     board.appendChild(div);
   });
 
   if (game.isTie()) {
-    info.innerText = `It's a tie!`;
-    button.removeAttribute("disabled");
-    button.className = "button button-hoverable";
+    if (info) {
+      info.innerText = `It's a tie!`;
+    }
+    button?.removeAttribute("disabled");
+    button?.classList.add("button", "button-hoverable");
   } else if (game.getWinner() !== "-") {
-    info.innerText = `Nice, ${game.getWinner()} won`;
-    button.removeAttribute("disabled");
-    button.className = "button button-hoverable";
+    if (info) {
+      info.innerText = `Nice, ${game.getWinner()} won`;
+    }
+    button?.removeAttribute("disabled");
+    button?.classList.add("button", "button-hoverable");
   } else {
-    info.innerText = `It's ${game.getTurn()} turn`;
-    button.setAttribute("disabled", "true");
-    button.className = "button";
+    if (info) {
+      info.innerText = `It's ${game.getTurn()} turn`;
+    }
+    button?.setAttribute("disabled", "true");
+    button?.classList.remove("button-hoverable");
+    button?.classList.add("button");
   }
 };
 
-draw(game);
+if (board) {
+  draw(game, board);
+}
